@@ -4,194 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Admin | GLOBALLED SST</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:linear-gradient(135deg,#031b1c,#062f31);
-color:white;
-}
-.login{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
-}
-.box{
-width:100%;
-max-width:420px;
-background:#061f21;
-padding:28px;
-border-radius:24px;
-box-shadow:0 0 30px rgba(0,255,180,.25);
-border:1px solid #16887d;
-}
-.logo{
-display:block;
-margin:0 auto 15px;
-max-width:130px;
-border-radius:18px;
-}
-h1,h2{color:#00ffae}
-input{
-width:100%;
-padding:15px;
-margin-top:12px;
-border-radius:14px;
-border:1px solid #16887d;
-background:#063638;
-color:white;
-font-size:16px;
-}
-button{
-padding:15px;
-border:none;
-border-radius:14px;
-background:#009b68;
-color:white;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-}
-.login button{width:100%;margin-top:16px}
-
-.app{display:none;min-height:100vh}
-.header{
-position:sticky;
-top:0;
-z-index:10;
-background:#061f21;
-border-bottom:1px solid #16887d;
-padding:14px 18px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-}
-.menu-btn{
-background:#082426;
-border:1px solid #16887d;
-width:52px;
-}
-.header-title{
-font-size:18px;
-font-weight:bold;
-color:#00ffae;
-}
-.layout{
-display:flex;
-}
-.sidebar{
-width:260px;
-background:#061f21;
-padding:18px;
-border-right:1px solid #16887d;
-min-height:calc(100vh - 70px);
-}
-.sidebar a{
-display:block;
-padding:14px;
-margin-top:10px;
-background:#082426;
-border:1px solid #16887d;
-border-radius:14px;
-color:white;
-text-decoration:none;
-font-weight:bold;
-}
-.sidebar a:hover{background:#0d3a3d}
-.content{
-flex:1;
-padding:24px;
-}
-.hero{
-background:linear-gradient(135deg,#063638,#082426);
-border:1px solid #16887d;
-border-radius:24px;
-padding:24px;
-box-shadow:0 0 25px rgba(0,255,180,.15);
-}
-.hero h1{
-font-size:34px;
-margin:0 0 10px;
-}
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-gap:15px;
-margin-top:22px;
-}
-.stat{
-background:#082426;
-border:1px solid #16887d;
-border-radius:18px;
-padding:18px;
-text-align:center;
-}
-.stat strong{
-display:block;
-font-size:32px;
-color:#00ffae;
-}
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:18px;
-margin-top:25px;
-}
-.card{
-background:#082426;
-border:1px solid #16887d;
-border-radius:20px;
-padding:20px;
-box-shadow:0 0 18px rgba(0,255,180,.12);
-}
-.card h3{
-color:#00ffae;
-margin-top:0;
-}
-.card a{
-display:block;
-margin-top:12px;
-background:#009b68;
-color:white;
-text-decoration:none;
-padding:13px;
-border-radius:12px;
-text-align:center;
-font-weight:bold;
-}
-.logout{
-background:#8b0000;
-}
-.badge{
-display:inline-block;
-background:#003f35;
-color:#00ffae;
-padding:7px 12px;
-border-radius:999px;
-font-size:13px;
-font-weight:bold;
-margin-top:8px;
-}
-@media(max-width:850px){
-.layout{display:block}
-.sidebar{
-display:none;
-width:100%;
-min-height:auto;
-border-right:none;
-border-bottom:1px solid #16887d;
-}
-.sidebar.ativo{display:block}
-.content{padding:18px}
-.hero h1{font-size:28px;text-align:center}
-.header-title{text-align:center}
-}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#031b1c,#062f31);color:white}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.box,.card,.hero{background:#061f21;border:1px solid #16887d;border-radius:22px;padding:20px;box-shadow:0 0 22px rgba(0,255,180,.15)}
+.box{max-width:420px;width:100%}
+.logo{display:block;margin:0 auto 15px;max-width:130px;border-radius:18px}
+h1,h2,h3{color:#00ffae}
+input,select,textarea{width:100%;padding:13px;margin-top:8px;border-radius:12px;border:1px solid #16887d;background:#063638;color:white;font-size:15px}
+textarea{min-height:90px}
+button,.btn{padding:13px;border:none;border-radius:12px;background:#009b68;color:white;font-weight:bold;text-decoration:none;display:inline-block;text-align:center}
+.logout{background:#8b0000}
+.app{display:none}
+.header{position:sticky;top:0;z-index:10;background:#061f21;border-bottom:1px solid #16887d;padding:12px;display:flex;justify-content:space-between;align-items:center}
+.layout{display:flex}
+.sidebar{width:260px;padding:15px;border-right:1px solid #16887d;min-height:calc(100vh - 65px)}
+.sidebar a{display:block;color:white;text-decoration:none;background:#082426;border:1px solid #16887d;padding:13px;border-radius:12px;margin:8px 0;font-weight:bold}
+.content{flex:1;padding:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:18px}
+.stat{text-align:center}
+.stat strong{font-size:34px;color:#00ffae;display:block}
+table{width:100%;border-collapse:collapse;margin-top:10px;background:#082426}
+td,th{border:1px solid #16887d;padding:8px;font-size:13px}
+.menu-btn{background:#082426;border:1px solid #16887d}
+@media(max-width:850px){.layout{display:block}.sidebar{display:none;width:100%;min-height:auto;border-right:none;border-bottom:1px solid #16887d}.sidebar.ativo{display:block}.content{padding:14px}}
 </style>
 </head>
-
 <body>
 
 <section class="login" id="login">
@@ -199,149 +39,221 @@ border-bottom:1px solid #16887d;
 <img class="logo" src="https://globalledsst.com.br/img/logo.png" onerror="this.style.display='none'">
 <h1 style="text-align:center">PAINEL ADMIN</h1>
 <p style="text-align:center">GLOBALLED SST</p>
-
 <input id="usuario" placeholder="Usuário">
 <input id="senha" type="password" placeholder="Senha">
-
-<button onclick="entrar()">ENTRAR</button>
-
-<p style="font-size:12px;text-align:center;margin-top:15px;color:#bde">
-Acesso restrito à administração GLOBALLED SST.
-</p>
+<button style="width:100%;margin-top:15px" onclick="entrar()">ENTRAR</button>
 </div>
 </section>
 
 <section class="app" id="app">
-
 <header class="header">
 <button class="menu-btn" onclick="toggleMenu()">☰</button>
-<div class="header-title">GLOBALLED SST | Painel Admin</div>
+<b style="color:#00ffae">GLOBALLED SST | Admin</b>
 <button class="logout" onclick="sair()">Sair</button>
 </header>
 
 <div class="layout">
-
 <nav class="sidebar" id="sidebar">
 <img class="logo" src="https://globalledsst.com.br/img/logo.png" onerror="this.style.display='none'">
-
 <a href="#dashboard">Dashboard</a>
 <a href="#clientes">Clientes</a>
-<a href="https://dinofilho.github.io/dds-digital-globalled/" target="_blank">DDS Digital</a>
-<a href="https://dinofilho.github.io/ficha-epi-globalled/" target="_blank">Ficha EPI</a>
-<a href="https://dinofilho.github.io/apr-digital-globalled/" target="_blank">APR Digital</a>
-<a href="https://dinofilho.github.io/canal-psicossocial/denuncia.html" target="_blank">Canal Denúncia</a>
-<a href="#documentos">Documentos SST</a>
+<a href="#dds">DDS</a>
+<a href="#epi">Ficha EPI</a>
+<a href="#apr">APR</a>
 <a href="#vencimentos">Vencimentos</a>
-<a href="#portal">Portal do Cliente</a>
+<a href="https://dinofilho.github.io/dds-digital-globalled/" target="_blank">Abrir DDS Digital</a>
+<a href="https://dinofilho.github.io/ficha-epi-globalled/" target="_blank">Abrir Ficha EPI</a>
+<a href="https://dinofilho.github.io/apr-digital-globalled/" target="_blank">Abrir APR</a>
+<a href="https://dinofilho.github.io/canal-psicossocial/denuncia.html" target="_blank">Canal Denúncia</a>
 </nav>
 
 <main class="content">
-
 <section class="hero" id="dashboard">
 <h1>Painel Administrativo GLOBALLED SST</h1>
-<p>Central de gestão para módulos digitais, clientes, documentos, vencimentos e serviços de Saúde e Segurança do Trabalho.</p>
-<span class="badge">Versão inicial sem banco de dados — próxima etapa: Supabase</span>
-
-<div class="stats">
-<div class="stat"><strong>0</strong>Clientes</div>
-<div class="stat"><strong>0</strong>DDS</div>
-<div class="stat"><strong>0</strong>Fichas EPI</div>
-<div class="stat"><strong>0</strong>APR</div>
-<div class="stat"><strong>0</strong>Denúncias</div>
-<div class="stat"><strong>0</strong>Vencimentos</div>
+<p>Gestão central de clientes, DDS, fichas EPI, APR e vencimentos conectada ao Supabase.</p>
+<div class="grid">
+<div class="card stat"><strong id="countClientes">0</strong>Clientes</div>
+<div class="card stat"><strong id="countDDS">0</strong>DDS</div>
+<div class="card stat"><strong id="countEPI">0</strong>Fichas EPI</div>
+<div class="card stat"><strong id="countAPR">0</strong>APR</div>
+<div class="card stat"><strong id="countVenc">0</strong>Vencimentos</div>
 </div>
 </section>
 
-<div class="grid">
-
-<div class="card">
-<h3>DDS Digital</h3>
-<p>Diálogo Diário de Segurança com participantes, ciência, assinatura e PDF.</p>
-<a href="https://dinofilho.github.io/dds-digital-globalled/" target="_blank">Abrir DDS</a>
-</div>
-
-<div class="card">
-<h3>Ficha Digital de EPI</h3>
-<p>Controle de entrega de EPI, CA, validade, termo e assinaturas.</p>
-<a href="https://dinofilho.github.io/ficha-epi-globalled/" target="_blank">Abrir Ficha EPI</a>
-</div>
-
-<div class="card">
-<h3>APR Digital</h3>
-<p>Análise Preliminar de Risco com riscos, medidas, EPIs e equipe.</p>
-<a href="https://dinofilho.github.io/apr-digital-globalled/" target="_blank">Abrir APR</a>
-</div>
-
-<div class="card">
-<h3>Canal Confidencial NR-1</h3>
-<p>Relatos relacionados a riscos psicossociais, segurança e ambiente de trabalho.</p>
-<a href="https://dinofilho.github.io/canal-psicossocial/denuncia.html" target="_blank">Abrir Canal</a>
-</div>
-
+<section class="grid">
 <div class="card" id="clientes">
-<h3>Clientes</h3>
-<p>Cadastro futuro de empresas, CNPJ, responsáveis, contratos e unidades.</p>
-<a href="#">Em desenvolvimento</a>
+<h2>Cadastrar Cliente</h2>
+<input id="clienteEmpresa" placeholder="Empresa">
+<input id="clienteCNPJ" placeholder="CNPJ">
+<input id="clienteResp" placeholder="Responsável">
+<input id="clienteEmail" placeholder="E-mail">
+<input id="clienteTel" placeholder="WhatsApp">
+<button onclick="salvarCliente()">Salvar Cliente</button>
 </div>
 
-<div class="card" id="documentos">
-<h3>Documentos SST</h3>
-<p>PGR, PCMSO, LTCAT, PPP, certificados, treinamentos e relatórios.</p>
-<a href="#">Em desenvolvimento</a>
+<div class="card" id="dds">
+<h2>Registrar DDS</h2>
+<select id="ddsCliente"></select>
+<input id="ddsTema" placeholder="Tema do DDS">
+<input id="ddsResp" placeholder="Responsável">
+<input id="ddsPart" type="number" placeholder="Participantes">
+<button onclick="salvarDDS()">Salvar DDS</button>
+</div>
+
+<div class="card" id="epi">
+<h2>Registrar Ficha EPI</h2>
+<select id="epiCliente"></select>
+<input id="epiColab" placeholder="Colaborador">
+<input id="epiCPF" placeholder="CPF">
+<input id="epiFuncao" placeholder="Função">
+<input id="epiNome" placeholder="EPI">
+<input id="epiCA" placeholder="CA">
+<input id="epiQtd" type="number" placeholder="Quantidade">
+<button onclick="salvarEPI()">Salvar Ficha EPI</button>
+</div>
+
+<div class="card" id="apr">
+<h2>Registrar APR</h2>
+<select id="aprCliente"></select>
+<input id="aprAtividade" placeholder="Atividade">
+<input id="aprLocal" placeholder="Local">
+<input id="aprRisco" placeholder="Risco principal">
+<input id="aprControle" placeholder="Controle / medida preventiva">
+<input id="aprResp" placeholder="Responsável">
+<button onclick="salvarAPR()">Salvar APR</button>
 </div>
 
 <div class="card" id="vencimentos">
-<h3>Controle de Vencimentos</h3>
-<p>Alertas de ASO, treinamentos, documentos, EPIs e prazos legais.</p>
-<a href="#">Em desenvolvimento</a>
+<h2>Registrar Vencimento</h2>
+<select id="vencCliente"></select>
+<input id="vencTipo" placeholder="Tipo: ASO, NR35, PGR...">
+<input id="vencDesc" placeholder="Descrição">
+<input id="vencData" type="date">
+<button onclick="salvarVencimento()">Salvar Vencimento</button>
 </div>
+</section>
 
-<div class="card" id="portal">
-<h3>Portal do Cliente</h3>
-<p>Futura área com login individual para cada empresa cliente.</p>
-<a href="#">Em desenvolvimento</a>
-</div>
-
-</div>
+<section class="card">
+<h2>Clientes Cadastrados</h2>
+<div id="listaClientes">Carregando...</div>
+</section>
 
 </main>
 </div>
 </section>
 
 <script>
+const SUPABASE_URL = "https://cujjdzfhicinarumphjq.supabase.co";
+const SUPABASE_KEY = "sb_publishable_XYp2Y75G8UTgMskNVfM3GA_Ybzrh9Fi";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const USUARIO_PADRAO="globalled";
 const SENHA_PADRAO="sst2026";
 
 function entrar(){
-let u=document.getElementById("usuario").value.trim();
-let s=document.getElementById("senha").value.trim();
-
-if(u===USUARIO_PADRAO && s===SENHA_PADRAO){
-localStorage.setItem("adminGloballed","logado");
-mostrarPainel();
-}else{
-alert("Usuário ou senha incorretos.");
-}
+ if(usuario.value.trim()===USUARIO_PADRAO && senha.value.trim()===SENHA_PADRAO){
+  localStorage.setItem("adminGloballed","logado");
+  mostrarPainel();
+ }else alert("Usuário ou senha incorretos.");
 }
 
 function mostrarPainel(){
-document.getElementById("login").style.display="none";
-document.getElementById("app").style.display="block";
+ login.style.display="none";
+ app.style.display="block";
+ carregarTudo();
 }
 
 function sair(){
-localStorage.removeItem("adminGloballed");
-document.getElementById("app").style.display="none";
-document.getElementById("login").style.display="flex";
+ localStorage.removeItem("adminGloballed");
+ app.style.display="none";
+ login.style.display="flex";
 }
 
-function toggleMenu(){
-document.getElementById("sidebar").classList.toggle("ativo");
+function toggleMenu(){sidebar.classList.toggle("ativo")}
+
+async function contar(tabela,id){
+ const {count,error}=await db.from(tabela).select("*",{count:"exact",head:true});
+ document.getElementById(id).innerText = error ? "0" : count;
 }
 
-if(localStorage.getItem("adminGloballed")==="logado"){
-mostrarPainel();
+async function carregarClientes(){
+ const {data,error}=await db.from("clientes").select("*").order("created_at",{ascending:false});
+ if(error){listaClientes.innerHTML="Erro ao carregar clientes."; return;}
+ const selects=[ddsCliente,epiCliente,aprCliente,vencCliente];
+ selects.forEach(s=>s.innerHTML='<option value="">Selecione o cliente</option>');
+ data.forEach(c=>{
+  selects.forEach(s=>s.innerHTML+=`<option value="${c.id}">${c.empresa}</option>`);
+ });
+ listaClientes.innerHTML = data.length ? `
+ <table><tr><th>Empresa</th><th>CNPJ</th><th>Responsável</th><th>Telefone</th></tr>
+ ${data.map(c=>`<tr><td>${c.empresa||""}</td><td>${c.cnpj||""}</td><td>${c.responsavel||""}</td><td>${c.telefone||""}</td></tr>`).join("")}
+ </table>` : "Nenhum cliente cadastrado.";
 }
+
+async function carregarTudo(){
+ await Promise.all([
+  contar("clientes","countClientes"),
+  contar("dds","countDDS"),
+  contar("fichas_epi","countEPI"),
+  contar("aprs","countAPR"),
+  contar("vencimentos","countVenc"),
+  carregarClientes()
+ ]);
+}
+
+async function salvarCliente(){
+ const {error}=await db.from("clientes").insert({
+  empresa:clienteEmpresa.value, cnpj:clienteCNPJ.value, responsavel:clienteResp.value,
+  email:clienteEmail.value, telefone:clienteTel.value
+ });
+ if(error) return alert("Erro: "+error.message);
+ alert("Cliente salvo!");
+ clienteEmpresa.value=clienteCNPJ.value=clienteResp.value=clienteEmail.value=clienteTel.value="";
+ carregarTudo();
+}
+
+async function salvarDDS(){
+ const {error}=await db.from("dds").insert({
+  cliente_id:ddsCliente.value||null, tema:ddsTema.value, responsavel:ddsResp.value,
+  participantes:parseInt(ddsPart.value||0)
+ });
+ if(error) return alert("Erro: "+error.message);
+ alert("DDS salvo!");
+ carregarTudo();
+}
+
+async function salvarEPI(){
+ const {error}=await db.from("fichas_epi").insert({
+  cliente_id:epiCliente.value||null, colaborador:epiColab.value, cpf:epiCPF.value,
+  funcao:epiFuncao.value, epi:epiNome.value, ca:epiCA.value,
+  quantidade:parseInt(epiQtd.value||0)
+ });
+ if(error) return alert("Erro: "+error.message);
+ alert("Ficha EPI salva!");
+ carregarTudo();
+}
+
+async function salvarAPR(){
+ const {error}=await db.from("aprs").insert({
+  cliente_id:aprCliente.value||null, atividade:aprAtividade.value, local:aprLocal.value,
+  risco:aprRisco.value, controle:aprControle.value, responsavel:aprResp.value
+ });
+ if(error) return alert("Erro: "+error.message);
+ alert("APR salva!");
+ carregarTudo();
+}
+
+async function salvarVencimento(){
+ const {error}=await db.from("vencimentos").insert({
+  cliente_id:vencCliente.value||null, tipo:vencTipo.value,
+  descricao:vencDesc.value, vencimento:vencData.value
+ });
+ if(error) return alert("Erro: "+error.message);
+ alert("Vencimento salvo!");
+ carregarTudo();
+}
+
+if(localStorage.getItem("adminGloballed")==="logado") mostrarPainel();
 </script>
 
 </body>
