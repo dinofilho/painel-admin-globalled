@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Admin | GLOBALLED SST</title>
-
 <style>
 *{box-sizing:border-box}
 body{
@@ -13,7 +12,7 @@ font-family:Arial,sans-serif;
 background:linear-gradient(135deg,#031b1c,#062f31);
 color:white;
 }
-.login,.app{
+.login{
 min-height:100vh;
 display:flex;
 align-items:center;
@@ -32,13 +31,10 @@ border:1px solid #16887d;
 .logo{
 display:block;
 margin:0 auto 15px;
-max-width:140px;
+max-width:130px;
 border-radius:18px;
 }
-h1,h2{
-text-align:center;
-color:#00ffae;
-}
+h1,h2{color:#00ffae}
 input{
 width:100%;
 padding:15px;
@@ -50,24 +46,48 @@ color:white;
 font-size:16px;
 }
 button{
-width:100%;
-padding:16px;
-margin-top:16px;
+padding:15px;
 border:none;
 border-radius:14px;
 background:#009b68;
 color:white;
-font-size:17px;
+font-size:16px;
 font-weight:bold;
 cursor:pointer;
 }
-.app{display:none;align-items:stretch;justify-content:flex-start;padding:0}
+.login button{width:100%;margin-top:16px}
+
+.app{display:none;min-height:100vh}
+.header{
+position:sticky;
+top:0;
+z-index:10;
+background:#061f21;
+border-bottom:1px solid #16887d;
+padding:14px 18px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+.menu-btn{
+background:#082426;
+border:1px solid #16887d;
+width:52px;
+}
+.header-title{
+font-size:18px;
+font-weight:bold;
+color:#00ffae;
+}
+.layout{
+display:flex;
+}
 .sidebar{
 width:260px;
 background:#061f21;
-padding:20px;
+padding:18px;
 border-right:1px solid #16887d;
-min-height:100vh;
+min-height:calc(100vh - 70px);
 }
 .sidebar a{
 display:block;
@@ -80,13 +100,43 @@ color:white;
 text-decoration:none;
 font-weight:bold;
 }
+.sidebar a:hover{background:#0d3a3d}
 .content{
 flex:1;
-padding:25px;
+padding:24px;
+}
+.hero{
+background:linear-gradient(135deg,#063638,#082426);
+border:1px solid #16887d;
+border-radius:24px;
+padding:24px;
+box-shadow:0 0 25px rgba(0,255,180,.15);
+}
+.hero h1{
+font-size:34px;
+margin:0 0 10px;
+}
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:15px;
+margin-top:22px;
+}
+.stat{
+background:#082426;
+border:1px solid #16887d;
+border-radius:18px;
+padding:18px;
+text-align:center;
+}
+.stat strong{
+display:block;
+font-size:32px;
+color:#00ffae;
 }
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
 gap:18px;
 margin-top:25px;
 }
@@ -107,25 +157,37 @@ margin-top:12px;
 background:#009b68;
 color:white;
 text-decoration:none;
-padding:12px;
+padding:13px;
 border-radius:12px;
 text-align:center;
 font-weight:bold;
 }
-.top{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:15px;
-}
 .logout{
-max-width:160px;
 background:#8b0000;
 }
-@media(max-width:800px){
-.app{flex-direction:column}
-.sidebar{width:100%;min-height:auto}
-.top{flex-direction:column;align-items:stretch}
+.badge{
+display:inline-block;
+background:#003f35;
+color:#00ffae;
+padding:7px 12px;
+border-radius:999px;
+font-size:13px;
+font-weight:bold;
+margin-top:8px;
+}
+@media(max-width:850px){
+.layout{display:block}
+.sidebar{
+display:none;
+width:100%;
+min-height:auto;
+border-right:none;
+border-bottom:1px solid #16887d;
+}
+.sidebar.ativo{display:block}
+.content{padding:18px}
+.hero h1{font-size:28px;text-align:center}
+.header-title{text-align:center}
 }
 </style>
 </head>
@@ -135,7 +197,7 @@ background:#8b0000;
 <section class="login" id="login">
 <div class="box">
 <img class="logo" src="https://globalledsst.com.br/img/logo.png" onerror="this.style.display='none'">
-<h1>PAINEL ADMIN</h1>
+<h1 style="text-align:center">PAINEL ADMIN</h1>
 <p style="text-align:center">GLOBALLED SST</p>
 
 <input id="usuario" placeholder="Usuário">
@@ -151,9 +213,16 @@ Acesso restrito à administração GLOBALLED SST.
 
 <section class="app" id="app">
 
-<div class="sidebar">
+<header class="header">
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<div class="header-title">GLOBALLED SST | Painel Admin</div>
+<button class="logout" onclick="sair()">Sair</button>
+</header>
+
+<div class="layout">
+
+<nav class="sidebar" id="sidebar">
 <img class="logo" src="https://globalledsst.com.br/img/logo.png" onerror="this.style.display='none'">
-<h2>GLOBALLED</h2>
 
 <a href="#dashboard">Dashboard</a>
 <a href="#clientes">Clientes</a>
@@ -161,65 +230,73 @@ Acesso restrito à administração GLOBALLED SST.
 <a href="https://dinofilho.github.io/ficha-epi-globalled/" target="_blank">Ficha EPI</a>
 <a href="https://dinofilho.github.io/apr-digital-globalled/" target="_blank">APR Digital</a>
 <a href="https://dinofilho.github.io/canal-psicossocial/denuncia.html" target="_blank">Canal Denúncia</a>
-<a href="#documentos">Documentos</a>
+<a href="#documentos">Documentos SST</a>
 <a href="#vencimentos">Vencimentos</a>
-</div>
+<a href="#portal">Portal do Cliente</a>
+</nav>
 
-<div class="content">
+<main class="content">
 
-<div class="top">
-<div>
+<section class="hero" id="dashboard">
 <h1>Painel Administrativo GLOBALLED SST</h1>
-<p>Central de gestão para módulos digitais, clientes, documentos e serviços SST.</p>
+<p>Central de gestão para módulos digitais, clientes, documentos, vencimentos e serviços de Saúde e Segurança do Trabalho.</p>
+<span class="badge">Versão inicial sem banco de dados — próxima etapa: Supabase</span>
+
+<div class="stats">
+<div class="stat"><strong>0</strong>Clientes</div>
+<div class="stat"><strong>0</strong>DDS</div>
+<div class="stat"><strong>0</strong>Fichas EPI</div>
+<div class="stat"><strong>0</strong>APR</div>
+<div class="stat"><strong>0</strong>Denúncias</div>
+<div class="stat"><strong>0</strong>Vencimentos</div>
 </div>
-<button class="logout" onclick="sair()">SAIR</button>
-</div>
+</section>
 
 <div class="grid">
 
 <div class="card">
 <h3>DDS Digital</h3>
-<p>Gerar Diálogo Diário de Segurança com participantes, ciência e PDF.</p>
+<p>Diálogo Diário de Segurança com participantes, ciência, assinatura e PDF.</p>
 <a href="https://dinofilho.github.io/dds-digital-globalled/" target="_blank">Abrir DDS</a>
 </div>
 
 <div class="card">
-<h3>Ficha de EPI</h3>
-<p>Registrar entrega de EPI, CA, validade, assinatura e gerar PDF.</p>
+<h3>Ficha Digital de EPI</h3>
+<p>Controle de entrega de EPI, CA, validade, termo e assinaturas.</p>
 <a href="https://dinofilho.github.io/ficha-epi-globalled/" target="_blank">Abrir Ficha EPI</a>
 </div>
 
 <div class="card">
 <h3>APR Digital</h3>
-<p>Análise Preliminar de Risco com riscos, EPIs, medidas e equipe.</p>
+<p>Análise Preliminar de Risco com riscos, medidas, EPIs e equipe.</p>
 <a href="https://dinofilho.github.io/apr-digital-globalled/" target="_blank">Abrir APR</a>
 </div>
 
 <div class="card">
 <h3>Canal Confidencial NR-1</h3>
-<p>Canal para relatos relacionados a riscos psicossociais e segurança.</p>
+<p>Relatos relacionados a riscos psicossociais, segurança e ambiente de trabalho.</p>
 <a href="https://dinofilho.github.io/canal-psicossocial/denuncia.html" target="_blank">Abrir Canal</a>
 </div>
 
-<div class="card">
+<div class="card" id="clientes">
 <h3>Clientes</h3>
-<p>Área futura para cadastrar empresas, responsáveis e contratos.</p>
+<p>Cadastro futuro de empresas, CNPJ, responsáveis, contratos e unidades.</p>
 <a href="#">Em desenvolvimento</a>
 </div>
 
-<div class="card">
+<div class="card" id="documentos">
 <h3>Documentos SST</h3>
 <p>PGR, PCMSO, LTCAT, PPP, certificados, treinamentos e relatórios.</p>
 <a href="#">Em desenvolvimento</a>
 </div>
 
-<div class="card">
+<div class="card" id="vencimentos">
 <h3>Controle de Vencimentos</h3>
-<p>Alertas de ASO, treinamentos, EPIs, documentos e prazos legais.</p>
+<p>Alertas de ASO, treinamentos, documentos, EPIs e prazos legais.</p>
 <a href="#">Em desenvolvimento</a>
 </div>
 
-<div class="card">
+<div class="card" id="portal">
 <h3>Portal do Cliente</h3>
 <p>Futura área com login individual para cada empresa cliente.</p>
 <a href="#">Em desenvolvimento</a>
@@ -227,12 +304,13 @@ Acesso restrito à administração GLOBALLED SST.
 
 </div>
 
+</main>
 </div>
 </section>
 
 <script>
-const USUARIO_PADRAO = "globalled";
-const SENHA_PADRAO = "sst2026";
+const USUARIO_PADRAO="globalled";
+const SENHA_PADRAO="sst2026";
 
 function entrar(){
 let u=document.getElementById("usuario").value.trim();
@@ -248,7 +326,7 @@ alert("Usuário ou senha incorretos.");
 
 function mostrarPainel(){
 document.getElementById("login").style.display="none";
-document.getElementById("app").style.display="flex";
+document.getElementById("app").style.display="block";
 }
 
 function sair(){
@@ -257,10 +335,14 @@ document.getElementById("app").style.display="none";
 document.getElementById("login").style.display="flex";
 }
 
+function toggleMenu(){
+document.getElementById("sidebar").classList.toggle("ativo");
+}
+
 if(localStorage.getItem("adminGloballed")==="logado"){
 mostrarPainel();
 }
 </script>
 
 </body>
-  </html>
+</html>
