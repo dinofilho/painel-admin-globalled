@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Admin | GLOBALLED SST</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#031b1c,#062f31);color:white}
@@ -41,6 +42,7 @@ td,th{padding:6px}
 }
 </style>
 </head>
+
 <body>
 
 <section class="login" id="login">
@@ -106,7 +108,23 @@ td,th{padding:6px}
 <div class="card" id="dds">
 <h2>Registrar DDS</h2>
 <select id="ddsCliente"></select>
-<input id="ddsTema" placeholder="Tema do DDS">
+<select id="ddsTema">
+<option value="">Selecione o tema</option>
+<option>Uso correto de EPI</option>
+<option>Trabalho em altura NR-35</option>
+<option>Eletricidade NR-10</option>
+<option>Espaço confinado NR-33</option>
+<option>Máquinas e equipamentos NR-12</option>
+<option>Inflamáveis NR-20</option>
+<option>Ergonomia</option>
+<option>Incêndio e emergência</option>
+<option>Ordem e limpeza</option>
+<option>Direção defensiva</option>
+<option>Produtos químicos</option>
+<option>Quase acidente</option>
+<option>Riscos psicossociais</option>
+<option>Outro</option>
+</select>
 <input id="ddsResp" placeholder="Responsável">
 <input id="ddsPart" type="number" placeholder="Participantes">
 <button onclick="salvarDDS()">Salvar DDS</button>
@@ -118,7 +136,29 @@ td,th{padding:6px}
 <input id="epiColab" placeholder="Colaborador">
 <input id="epiCPF" placeholder="CPF">
 <input id="epiFuncao" placeholder="Função">
-<input id="epiNome" placeholder="EPI">
+
+<select id="epiNome">
+<option value="">Selecione o EPI</option>
+<option>Capacete de segurança</option>
+<option>Óculos de proteção</option>
+<option>Protetor auricular</option>
+<option>Respirador PFF2</option>
+<option>Respirador semifacial</option>
+<option>Luva nitrílica</option>
+<option>Luva de vaqueta</option>
+<option>Luva pigmentada</option>
+<option>Botina de segurança</option>
+<option>Cinturão paraquedista NR-35</option>
+<option>Talabarte</option>
+<option>Trava-quedas</option>
+<option>Creme de proteção</option>
+<option>Avental de raspa</option>
+<option>Perneira</option>
+<option>Máscara facial</option>
+<option>Protetor solar</option>
+<option>Outro</option>
+</select>
+
 <input id="epiCA" placeholder="CA">
 <input id="epiQtd" type="number" placeholder="Quantidade">
 <button onclick="salvarEPI()">Salvar Ficha EPI</button>
@@ -271,7 +311,6 @@ async function salvarCliente(){
  }
 
  alert(clienteEditando ? "Cliente atualizado!" : "Cliente salvo!");
-
  limparFormularioCliente();
  carregarTudo();
 }
