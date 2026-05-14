@@ -15,8 +15,9 @@ body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#03
 h1,h2,h3{color:#00ffae}
 input,select,textarea{width:100%;padding:13px;margin-top:8px;border-radius:12px;border:1px solid #16887d;background:#063638;color:white;font-size:15px}
 textarea{min-height:90px}
-button,.btn{padding:13px;border:none;border-radius:12px;background:#009b68;color:white;font-weight:bold;text-decoration:none;display:inline-block;text-align:center}
-.logout{background:#8b0000}
+button,.btn{padding:13px;border:none;border-radius:12px;background:#009b68;color:white;font-weight:bold;text-decoration:none;display:inline-block;text-align:center;cursor:pointer}
+.logout,.btn-red{background:#8b0000}
+.btn-blue{background:#004aad}
 .app{display:none}
 .header{position:sticky;top:0;z-index:10;background:#061f21;border-bottom:1px solid #16887d;padding:12px;display:flex;justify-content:space-between;align-items:center}
 .layout{display:flex}
@@ -28,8 +29,16 @@ button,.btn{padding:13px;border:none;border-radius:12px;background:#009b68;color
 .stat strong{font-size:34px;color:#00ffae;display:block}
 table{width:100%;border-collapse:collapse;margin-top:10px;background:#082426}
 td,th{border:1px solid #16887d;padding:8px;font-size:13px}
+td button{margin:3px;padding:8px;font-size:12px}
 .menu-btn{background:#082426;border:1px solid #16887d}
-@media(max-width:850px){.layout{display:block}.sidebar{display:none;width:100%;min-height:auto;border-right:none;border-bottom:1px solid #16887d}.sidebar.ativo{display:block}.content{padding:14px}}
+@media(max-width:850px){
+.layout{display:block}
+.sidebar{display:none;width:100%;min-height:auto;border-right:none;border-bottom:1px solid #16887d}
+.sidebar.ativo{display:block}
+.content{padding:14px}
+table{font-size:12px}
+td,th{padding:6px}
+}
 </style>
 </head>
 <body>
@@ -68,6 +77,7 @@ td,th{border:1px solid #16887d;padding:8px;font-size:13px}
 </nav>
 
 <main class="content">
+
 <section class="hero" id="dashboard">
 <h1>Painel Administrativo GLOBALLED SST</h1>
 <p>Gestão central de clientes, DDS, fichas EPI, APR e vencimentos conectada ao Supabase.</p>
@@ -81,14 +91,16 @@ td,th{border:1px solid #16887d;padding:8px;font-size:13px}
 </section>
 
 <section class="grid">
+
 <div class="card" id="clientes">
-<h2>Cadastrar Cliente</h2>
+<h2 id="tituloCliente">Cadastrar Cliente</h2>
 <input id="clienteEmpresa" placeholder="Empresa">
 <input id="clienteCNPJ" placeholder="CNPJ">
 <input id="clienteResp" placeholder="Responsável">
 <input id="clienteEmail" placeholder="E-mail">
 <input id="clienteTel" placeholder="WhatsApp">
 <button onclick="salvarCliente()">Salvar Cliente</button>
+<button class="btn-blue" onclick="cancelarEdicaoCliente()">Cancelar edição</button>
 </div>
 
 <div class="card" id="dds">
@@ -131,6 +143,7 @@ td,th{border:1px solid #16887d;padding:8px;font-size:13px}
 <input id="vencData" type="date">
 <button onclick="salvarVencimento()">Salvar Vencimento</button>
 </div>
+
 </section>
 
 <section class="card">
@@ -150,11 +163,15 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const USUARIO_PADRAO="globalled";
 const SENHA_PADRAO="sst2026";
 
+let clienteEditando = null;
+
 function entrar(){
  if(usuario.value.trim()===USUARIO_PADRAO && senha.value.trim()===SENHA_PADRAO){
   localStorage.setItem("adminGloballed","logado");
   mostrarPainel();
- }else alert("Usuário ou senha incorretos.");
+ }else{
+  alert("Usuário ou senha incorretos.");
+ }
 }
 
 function mostrarPainel(){
@@ -169,7 +186,9 @@ function sair(){
  login.style.display="flex";
 }
 
-function toggleMenu(){sidebar.classList.toggle("ativo")}
+function toggleMenu(){
+ sidebar.classList.toggle("ativo");
+}
 
 async function contar(tabela,id){
  const {count,error}=await db.from(tabela).select("*",{count:"exact",head:true});
@@ -178,16 +197,44 @@ async function contar(tabela,id){
 
 async function carregarClientes(){
  const {data,error}=await db.from("clientes").select("*").order("created_at",{ascending:false});
- if(error){listaClientes.innerHTML="Erro ao carregar clientes."; return;}
+
+ if(error){
+  listaClientes.innerHTML="Erro ao carregar clientes: " + error.message;
+  return;
+ }
+
  const selects=[ddsCliente,epiCliente,aprCliente,vencCliente];
  selects.forEach(s=>s.innerHTML='<option value="">Selecione o cliente</option>');
+
  data.forEach(c=>{
-  selects.forEach(s=>s.innerHTML+=`<option value="${c.id}">${c.empresa}</option>`);
+  selects.forEach(s=>{
+   s.innerHTML+=`<option value="${c.id}">${c.empresa}</option>`;
+  });
  });
+
  listaClientes.innerHTML = data.length ? `
- <table><tr><th>Empresa</th><th>CNPJ</th><th>Responsável</th><th>Telefone</th></tr>
- ${data.map(c=>`<tr><td>${c.empresa||""}</td><td>${c.cnpj||""}</td><td>${c.responsavel||""}</td><td>${c.telefone||""}</td></tr>`).join("")}
- </table>` : "Nenhum cliente cadastrado.";
+ <table>
+ <tr>
+ <th>Empresa</th>
+ <th>CNPJ</th>
+ <th>Responsável</th>
+ <th>Telefone</th>
+ <th>Ações</th>
+ </tr>
+ ${data.map(c=>`
+ <tr>
+ <td>${c.empresa||""}</td>
+ <td>${c.cnpj||""}</td>
+ <td>${c.responsavel||""}</td>
+ <td>${c.telefone||""}</td>
+ <td>
+ <button onclick='editarCliente(${JSON.stringify(c)})'>Editar</button>
+ <button class="btn-red" onclick='excluirCliente("${c.id}")'>Excluir</button>
+ </td>
+ </tr>
+ `).join("")}
+ </table>
+ ` : "Nenhum cliente cadastrado.";
 }
 
 async function carregarTudo(){
@@ -202,58 +249,153 @@ async function carregarTudo(){
 }
 
 async function salvarCliente(){
- const {error}=await db.from("clientes").insert({
-  empresa:clienteEmpresa.value, cnpj:clienteCNPJ.value, responsavel:clienteResp.value,
-  email:clienteEmail.value, telefone:clienteTel.value
- });
- if(error) return alert("Erro: "+error.message);
- alert("Cliente salvo!");
- clienteEmpresa.value=clienteCNPJ.value=clienteResp.value=clienteEmail.value=clienteTel.value="";
+ const dados = {
+  empresa: clienteEmpresa.value,
+  cnpj: clienteCNPJ.value,
+  responsavel: clienteResp.value,
+  email: clienteEmail.value,
+  telefone: clienteTel.value
+ };
+
+ let error;
+
+ if(clienteEditando){
+  ({ error } = await db.from("clientes").update(dados).eq("id", clienteEditando));
+ }else{
+  ({ error } = await db.from("clientes").insert(dados));
+ }
+
+ if(error){
+  alert("Erro: " + error.message);
+  return;
+ }
+
+ alert(clienteEditando ? "Cliente atualizado!" : "Cliente salvo!");
+
+ limparFormularioCliente();
+ carregarTudo();
+}
+
+function editarCliente(c){
+ clienteEditando = c.id;
+ tituloCliente.innerText = "Editando Cliente";
+ clienteEmpresa.value = c.empresa || "";
+ clienteCNPJ.value = c.cnpj || "";
+ clienteResp.value = c.responsavel || "";
+ clienteEmail.value = c.email || "";
+ clienteTel.value = c.telefone || "";
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function cancelarEdicaoCliente(){
+ limparFormularioCliente();
+}
+
+function limparFormularioCliente(){
+ clienteEmpresa.value="";
+ clienteCNPJ.value="";
+ clienteResp.value="";
+ clienteEmail.value="";
+ clienteTel.value="";
+ clienteEditando=null;
+ tituloCliente.innerText = "Cadastrar Cliente";
+}
+
+async function excluirCliente(id){
+ if(!confirm("Tem certeza que deseja excluir este cliente?")) return;
+
+ const {error}=await db.from("clientes").delete().eq("id",id);
+
+ if(error){
+  alert("Erro: " + error.message);
+  return;
+ }
+
+ alert("Cliente excluído!");
  carregarTudo();
 }
 
 async function salvarDDS(){
  const {error}=await db.from("dds").insert({
-  cliente_id:ddsCliente.value||null, tema:ddsTema.value, responsavel:ddsResp.value,
+  cliente_id:ddsCliente.value||null,
+  tema:ddsTema.value,
+  responsavel:ddsResp.value,
   participantes:parseInt(ddsPart.value||0)
  });
+
  if(error) return alert("Erro: "+error.message);
+
  alert("DDS salvo!");
+ ddsTema.value="";
+ ddsResp.value="";
+ ddsPart.value="";
  carregarTudo();
 }
 
 async function salvarEPI(){
  const {error}=await db.from("fichas_epi").insert({
-  cliente_id:epiCliente.value||null, colaborador:epiColab.value, cpf:epiCPF.value,
-  funcao:epiFuncao.value, epi:epiNome.value, ca:epiCA.value,
+  cliente_id:epiCliente.value||null,
+  colaborador:epiColab.value,
+  cpf:epiCPF.value,
+  funcao:epiFuncao.value,
+  epi:epiNome.value,
+  ca:epiCA.value,
   quantidade:parseInt(epiQtd.value||0)
  });
+
  if(error) return alert("Erro: "+error.message);
+
  alert("Ficha EPI salva!");
+ epiColab.value="";
+ epiCPF.value="";
+ epiFuncao.value="";
+ epiNome.value="";
+ epiCA.value="";
+ epiQtd.value="";
  carregarTudo();
 }
 
 async function salvarAPR(){
  const {error}=await db.from("aprs").insert({
-  cliente_id:aprCliente.value||null, atividade:aprAtividade.value, local:aprLocal.value,
-  risco:aprRisco.value, controle:aprControle.value, responsavel:aprResp.value
+  cliente_id:aprCliente.value||null,
+  atividade:aprAtividade.value,
+  local:aprLocal.value,
+  risco:aprRisco.value,
+  controle:aprControle.value,
+  responsavel:aprResp.value
  });
+
  if(error) return alert("Erro: "+error.message);
+
  alert("APR salva!");
+ aprAtividade.value="";
+ aprLocal.value="";
+ aprRisco.value="";
+ aprControle.value="";
+ aprResp.value="";
  carregarTudo();
 }
 
 async function salvarVencimento(){
  const {error}=await db.from("vencimentos").insert({
-  cliente_id:vencCliente.value||null, tipo:vencTipo.value,
-  descricao:vencDesc.value, vencimento:vencData.value
+  cliente_id:vencCliente.value||null,
+  tipo:vencTipo.value,
+  descricao:vencDesc.value,
+  vencimento:vencData.value
  });
+
  if(error) return alert("Erro: "+error.message);
+
  alert("Vencimento salvo!");
+ vencTipo.value="";
+ vencDesc.value="";
+ vencData.value="";
  carregarTudo();
 }
 
-if(localStorage.getItem("adminGloballed")==="logado") mostrarPainel();
+if(localStorage.getItem("adminGloballed")==="logado"){
+ mostrarPainel();
+}
 </script>
 
 </body>
