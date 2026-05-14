@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Admin | GLOBALLED SST</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#031b1c,#062f31);
+color:white;
+}
+.login,.app{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+.box{
+width:100%;
+max-width:420px;
+background:#061f21;
+padding:28px;
+border-radius:24px;
+box-shadow:0 0 30px rgba(0,255,180,.25);
+border:1px solid #16887d;
+}
+.logo{
+display:block;
+margin:0 auto 15px;
+max-width:140px;
+border-radius:18px;
+}
+h1,h2{
+text-align:center;
+color:#00ffae;
+}
+input{
+width:100%;
+padding:15px;
+margin-top:12px;
+border-radius:14px;
+border:1px solid #16887d;
+background:#063638;
+color:white;
+font-size:16px;
+}
+button{
+width:100%;
+padding:16px;
+margin-top:16px;
+border:none;
+border-radius:14px;
+background:#009b68;
+color:white;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+}
+.app{display:none;align-items:stretch;justify-content:flex-start;padding:0}
+.sidebar{
+width:260px;
+background:#061f21;
+padding:20px;
+border-right:1px solid #16887d;
+min-height:100vh;
+}
+.sidebar a{
+display:block;
+padding:14px;
+margin-top:10px;
+background:#082426;
+border:1px solid #16887d;
+border-radius:14px;
+color:white;
+text-decoration:none;
+font-weight:bold;
+}
+.content{
+flex:1;
+padding:25px;
+}
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;
+margin-top:25px;
+}
+.card{
+background:#082426;
+border:1px solid #16887d;
+border-radius:20px;
+padding:20px;
+box-shadow:0 0 18px rgba(0,255,180,.12);
+}
+.card h3{
+color:#00ffae;
+margin-top:0;
+}
+.card a{
+display:block;
+margin-top:12px;
+background:#009b68;
+color:white;
+text-decoration:none;
+padding:12px;
+border-radius:12px;
+text-align:center;
+font-weight:bold;
+}
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+}
+.logout{
+max-width:160px;
+background:#8b0000;
+}
+@media(max-width:800px){
+.app{flex-direction:column}
+.sidebar{width:100%;min-height:auto}
+.top{flex-direction:column;align-items:stretch}
+}
+</style>
+</head>
+
+<body>
+
+<section class="login" id="login">
+<div class="box">
+<img class="logo" src="https://globalledsst.com.br/img/logo.png" onerror="this.style.display='none'">
+<h1>PAINEL ADMIN</h1>
+<p style="text-align:center">GLOBALLED SST</p>
+
+<input id="usuario" placeholder="Usuário">
+<input id="senha" type="password" placeholder="Senha">
+
+<button onclick="entrar()">ENTRAR</button>
+
+<p style="font-size:12px;text-align:center;margin-top:15px;color:#bde">
+Acesso restrito à administração GLOBALLED SST.
+</p>
+</div>
+</section>
+
+<section class="app" id="app">
+
+<div class="sidebar">
+<img class="logo" src="https://globalledsst.com.br/img/logo.png" onerror="this.style.display='none'">
+<h2>GLOBALLED</h2>
+
+<a href="#dashboard">Dashboard</a>
+<a href="#clientes">Clientes</a>
+<a href="https://dinofilho.github.io/dds-digital-globalled/" target="_blank">DDS Digital</a>
+<a href="https://dinofilho.github.io/ficha-epi-globalled/" target="_blank">Ficha EPI</a>
+<a href="https://dinofilho.github.io/apr-digital-globalled/" target="_blank">APR Digital</a>
+<a href="https://dinofilho.github.io/canal-psicossocial/denuncia.html" target="_blank">Canal Denúncia</a>
+<a href="#documentos">Documentos</a>
+<a href="#vencimentos">Vencimentos</a>
+</div>
+
+<div class="content">
+
+<div class="top">
+<div>
+<h1>Painel Administrativo GLOBALLED SST</h1>
+<p>Central de gestão para módulos digitais, clientes, documentos e serviços SST.</p>
+</div>
+<button class="logout" onclick="sair()">SAIR</button>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h3>DDS Digital</h3>
+<p>Gerar Diálogo Diário de Segurança com participantes, ciência e PDF.</p>
+<a href="https://dinofilho.github.io/dds-digital-globalled/" target="_blank">Abrir DDS</a>
+</div>
+
+<div class="card">
+<h3>Ficha de EPI</h3>
+<p>Registrar entrega de EPI, CA, validade, assinatura e gerar PDF.</p>
+<a href="https://dinofilho.github.io/ficha-epi-globalled/" target="_blank">Abrir Ficha EPI</a>
+</div>
+
+<div class="card">
+<h3>APR Digital</h3>
+<p>Análise Preliminar de Risco com riscos, EPIs, medidas e equipe.</p>
+<a href="https://dinofilho.github.io/apr-digital-globalled/" target="_blank">Abrir APR</a>
+</div>
+
+<div class="card">
+<h3>Canal Confidencial NR-1</h3>
+<p>Canal para relatos relacionados a riscos psicossociais e segurança.</p>
+<a href="https://dinofilho.github.io/canal-psicossocial/denuncia.html" target="_blank">Abrir Canal</a>
+</div>
+
+<div class="card">
+<h3>Clientes</h3>
+<p>Área futura para cadastrar empresas, responsáveis e contratos.</p>
+<a href="#">Em desenvolvimento</a>
+</div>
+
+<div class="card">
+<h3>Documentos SST</h3>
+<p>PGR, PCMSO, LTCAT, PPP, certificados, treinamentos e relatórios.</p>
+<a href="#">Em desenvolvimento</a>
+</div>
+
+<div class="card">
+<h3>Controle de Vencimentos</h3>
+<p>Alertas de ASO, treinamentos, EPIs, documentos e prazos legais.</p>
+<a href="#">Em desenvolvimento</a>
+</div>
+
+<div class="card">
+<h3>Portal do Cliente</h3>
+<p>Futura área com login individual para cada empresa cliente.</p>
+<a href="#">Em desenvolvimento</a>
+</div>
+
+</div>
+
+</div>
+</section>
+
+<script>
+const USUARIO_PADRAO = "globalled";
+const SENHA_PADRAO = "sst2026";
+
+function entrar(){
+let u=document.getElementById("usuario").value.trim();
+let s=document.getElementById("senha").value.trim();
+
+if(u===USUARIO_PADRAO && s===SENHA_PADRAO){
+localStorage.setItem("adminGloballed","logado");
+mostrarPainel();
+}else{
+alert("Usuário ou senha incorretos.");
+}
+}
+
+function mostrarPainel(){
+document.getElementById("login").style.display="none";
+document.getElementById("app").style.display="flex";
+}
+
+function sair(){
+localStorage.removeItem("adminGloballed");
+document.getElementById("app").style.display="none";
+document.getElementById("login").style.display="flex";
+}
+
+if(localStorage.getItem("adminGloballed")==="logado"){
+mostrarPainel();
+}
+</script>
+
+</body>
+  </html>
