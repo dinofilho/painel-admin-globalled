@@ -16,9 +16,10 @@ body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#03
 h1,h2,h3{color:#00ffae}
 input,select,textarea{width:100%;padding:13px;margin-top:8px;border-radius:12px;border:1px solid #16887d;background:#063638;color:white;font-size:15px}
 textarea{min-height:90px}
-button,.btn{padding:13px;border:none;border-radius:12px;background:#009b68;color:white;font-weight:bold;text-decoration:none;display:inline-block;text-align:center;cursor:pointer}
+button,.btn{padding:12px;border:none;border-radius:12px;background:#009b68;color:white;font-weight:bold;text-decoration:none;display:inline-block;text-align:center;cursor:pointer}
 .logout,.btn-red{background:#8b0000}
 .btn-blue{background:#004aad}
+.btn-orange{background:#b86b00}
 .app{display:none}
 .header{position:sticky;top:0;z-index:10;background:#061f21;border-bottom:1px solid #16887d;padding:12px;display:flex;justify-content:space-between;align-items:center}
 .layout{display:flex}
@@ -29,11 +30,26 @@ button,.btn{padding:13px;border:none;border-radius:12px;background:#009b68;color
 .stat{text-align:center}
 .stat strong{font-size:34px;color:#00ffae;display:block}
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;margin-top:10px;background:#082426;min-width:700px}
+table{width:100%;border-collapse:collapse;margin-top:10px;background:#082426;min-width:850px}
 td,th{border:1px solid #16887d;padding:8px;font-size:13px;vertical-align:top}
 td button{margin:3px;padding:8px;font-size:12px}
 .menu-btn{background:#082426;border:1px solid #16887d}
 .assinatura-img{max-width:160px;max-height:80px;background:white;border-radius:8px}
+.alerta{padding:6px 10px;border-radius:10px;font-weight:bold;display:inline-block}
+.vencido{background:#8b0000;color:white}
+.vencendo{background:#b86b00;color:white}
+.ok{background:#087a3a;color:white}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;padding:20px;overflow:auto}
+.modal-box{background:white;color:#111;max-width:850px;margin:auto;padding:25px;border-radius:18px}
+.modal-box h1,.modal-box h2{color:#004d40}
+.fechar{background:#8b0000;color:white;margin-bottom:15px}
+.print-btn{background:#004aad;color:white;margin-bottom:15px}
+@media print{
+body *{visibility:hidden}
+#modalConteudo,#modalConteudo *{visibility:visible}
+#modalConteudo{position:absolute;left:0;top:0;width:100%}
+.fechar,.print-btn{display:none!important}
+}
 @media(max-width:850px){
 .layout{display:block}
 .sidebar{display:none;width:100%;min-height:auto;border-right:none;border-bottom:1px solid #16887d}
@@ -70,6 +86,7 @@ td,th{padding:6px}
 <img class="logo" src="https://globalledsst.com.br/img/logo.png" onerror="this.style.display='none'">
 <a href="#dashboard">Dashboard</a>
 <a href="#clientes">Clientes</a>
+<a href="#funcionarios">Funcionários</a>
 <a href="#dds">DDS</a>
 <a href="#epi">Ficha EPI</a>
 <a href="#apr">APR</a>
@@ -77,20 +94,20 @@ td,th{padding:6px}
 <a href="#listaFichas">Fichas Salvas</a>
 <a href="#listaDDS">DDS Salvos</a>
 <a href="#listaAPR">APR Salvas</a>
-<a href="#listaVencimentos">Vencimentos Salvos</a>
+<a href="#listaFuncionarios">Funcionários Salvos</a>
 <a href="https://dinofilho.github.io/dds-digital-globalled/" target="_blank">Abrir DDS Digital</a>
 <a href="https://dinofilho.github.io/ficha-epi-globalled/" target="_blank">Abrir Ficha EPI</a>
 <a href="https://dinofilho.github.io/apr-digital-globalled/" target="_blank">Abrir APR</a>
-<a href="https://dinofilho.github.io/canal-psicossocial/denuncia.html" target="_blank">Canal Denúncia</a>
 </nav>
 
 <main class="content">
 
 <section class="hero" id="dashboard">
 <h1>Painel Administrativo GLOBALLED SST</h1>
-<p>Gestão central de clientes, DDS, fichas EPI, APR e vencimentos conectada ao Supabase.</p>
+<p>Gestão central de clientes, funcionários, DDS, fichas EPI, APR e vencimentos.</p>
 <div class="grid">
 <div class="card stat"><strong id="countClientes">0</strong>Clientes</div>
+<div class="card stat"><strong id="countFunc">0</strong>Funcionários</div>
 <div class="card stat"><strong id="countDDS">0</strong>DDS</div>
 <div class="card stat"><strong id="countEPI">0</strong>Fichas EPI</div>
 <div class="card stat"><strong id="countAPR">0</strong>APR</div>
@@ -109,6 +126,20 @@ td,th{padding:6px}
 <input id="clienteTel" placeholder="WhatsApp">
 <button onclick="salvarCliente()">Salvar Cliente</button>
 <button class="btn-blue" onclick="cancelarEdicaoCliente()">Cancelar edição</button>
+</div>
+
+<div class="card" id="funcionarios">
+<h2>Cadastrar Funcionário</h2>
+<select id="funcCliente"></select>
+<input id="funcNome" placeholder="Nome do funcionário">
+<input id="funcCPF" placeholder="CPF">
+<input id="funcFuncao" placeholder="Função">
+<label>Admissão</label><input id="funcAdmissao" type="date">
+<label>ASO</label><input id="funcASO" type="date">
+<label>Periódico</label><input id="funcPeriodico" type="date">
+<label>NR10</label><input id="funcNR10" type="date">
+<label>NR35</label><input id="funcNR35" type="date">
+<button onclick="salvarFuncionario()">Salvar Funcionário</button>
 </div>
 
 <div class="card" id="dds">
@@ -143,7 +174,6 @@ td,th{padding:6px}
 <input id="epiColab" placeholder="Colaborador">
 <input id="epiCPF" placeholder="CPF">
 <input id="epiFuncao" placeholder="Função">
-
 <select id="epiNome">
 <option value="">Selecione o EPI</option>
 <option>Capacete de segurança</option>
@@ -165,7 +195,6 @@ td,th{padding:6px}
 <option>Protetor solar</option>
 <option>Outro</option>
 </select>
-
 <input id="epiCA" placeholder="CA">
 <input id="epiQtd" type="number" placeholder="Quantidade">
 <input id="epiDescricao" placeholder="Descrição complementar">
@@ -194,34 +223,20 @@ td,th{padding:6px}
 
 </section>
 
-<section class="card">
-<h2>Clientes Cadastrados</h2>
-<div id="listaClientes">Carregando...</div>
-</section>
-
-<section class="card" id="listaFichas">
-<h2>Fichas EPI Entregues</h2>
-<div id="tabelaFichas">Carregando...</div>
-</section>
-
-<section class="card" id="listaDDS">
-<h2>DDS Realizados</h2>
-<div id="tabelaDDS">Carregando...</div>
-</section>
-
-<section class="card" id="listaAPR">
-<h2>APR Realizadas</h2>
-<div id="tabelaAPR">Carregando...</div>
-</section>
-
-<section class="card" id="listaVencimentos">
-<h2>Vencimentos Cadastrados</h2>
-<div id="tabelaVencimentos">Carregando...</div>
-</section>
+<section class="card"><h2>Clientes Cadastrados</h2><div id="listaClientes">Carregando...</div></section>
+<section class="card" id="listaFuncionarios"><h2>Funcionários Cadastrados</h2><div id="tabelaFuncionarios">Carregando...</div></section>
+<section class="card" id="listaFichas"><h2>Fichas EPI Entregues</h2><div id="tabelaFichas">Carregando...</div></section>
+<section class="card" id="listaDDS"><h2>DDS Realizados</h2><div id="tabelaDDS">Carregando...</div></section>
+<section class="card" id="listaAPR"><h2>APR Realizadas</h2><div id="tabelaAPR">Carregando...</div></section>
+<section class="card" id="listaVencimentos"><h2>Vencimentos Cadastrados</h2><div id="tabelaVencimentos">Carregando...</div></section>
 
 </main>
 </div>
 </section>
+
+<div class="modal" id="modal">
+<div class="modal-box" id="modalConteudo"></div>
+</div>
 
 <script>
 const SUPABASE_URL = "https://cujjdzfhicinarumphjq.supabase.co";
@@ -230,7 +245,6 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const USUARIO_PADRAO="globalled";
 const SENHA_PADRAO="sst2026";
-
 let clienteEditando = null;
 let mapaClientes = {};
 
@@ -238,43 +252,39 @@ function entrar(){
  if(usuario.value.trim()===USUARIO_PADRAO && senha.value.trim()===SENHA_PADRAO){
   localStorage.setItem("adminGloballed","logado");
   mostrarPainel();
- }else{
-  alert("Usuário ou senha incorretos.");
- }
+ }else alert("Usuário ou senha incorretos.");
 }
 
-function mostrarPainel(){
- login.style.display="none";
- app.style.display="block";
- carregarTudo();
-}
-
-function sair(){
- localStorage.removeItem("adminGloballed");
- app.style.display="none";
- login.style.display="flex";
-}
-
-function toggleMenu(){
- sidebar.classList.toggle("ativo");
-}
-
-function nomeCliente(id){
- return mapaClientes[id] || "Sem cliente";
-}
+function mostrarPainel(){login.style.display="none";app.style.display="block";carregarTudo()}
+function sair(){localStorage.removeItem("adminGloballed");app.style.display="none";login.style.display="flex"}
+function toggleMenu(){sidebar.classList.toggle("ativo")}
+function nomeCliente(id){return mapaClientes[id] || "Sem cliente"}
 
 function dataBR(valor){
  if(!valor) return "";
  const d = new Date(valor);
  if(isNaN(d)) return valor;
- return d.toLocaleDateString("pt-BR") + " " + d.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
+ return d.toLocaleDateString("pt-BR");
+}
+
+function diasPara(data){
+ if(!data) return null;
+ const hoje = new Date(); hoje.setHours(0,0,0,0);
+ const d = new Date(data); d.setHours(0,0,0,0);
+ return Math.ceil((d-hoje)/(1000*60*60*24));
+}
+
+function statusVenc(data){
+ const dias = diasPara(data);
+ if(dias===null) return "";
+ if(dias < 0) return `<span class="alerta vencido">Vencido há ${Math.abs(dias)} dias</span>`;
+ if(dias <= 30) return `<span class="alerta vencendo">Vence em ${dias} dias</span>`;
+ return `<span class="alerta ok">Em dia</span>`;
 }
 
 function assinaturaHTML(valor){
- if(!valor) return "";
- if(String(valor).startsWith("data:image")){
-  return `<img class="assinatura-img" src="${valor}">`;
- }
+ if(!valor) return "Não salva";
+ if(String(valor).startsWith("data:image")) return `<img class="assinatura-img" src="${valor}">`;
  return "Assinatura salva";
 }
 
@@ -285,372 +295,181 @@ async function contar(tabela,id){
 
 async function carregarClientes(){
  const {data,error}=await db.from("clientes").select("*").order("created_at",{ascending:false});
-
- if(error){
-  listaClientes.innerHTML="Erro ao carregar clientes: " + error.message;
-  return;
- }
-
- mapaClientes = {};
- data.forEach(c=> mapaClientes[c.id] = c.empresa || "Cliente");
-
- const selects=[ddsCliente,epiCliente,aprCliente,vencCliente];
+ if(error){listaClientes.innerHTML="Erro: "+error.message;return}
+ mapaClientes={}; data.forEach(c=>mapaClientes[c.id]=c.empresa||"Cliente");
+ const selects=[ddsCliente,epiCliente,aprCliente,vencCliente,funcCliente];
  selects.forEach(s=>s.innerHTML='<option value="">Selecione o cliente</option>');
+ data.forEach(c=>selects.forEach(s=>s.innerHTML+=`<option value="${c.id}">${c.empresa}</option>`));
 
- data.forEach(c=>{
-  selects.forEach(s=>{
-   s.innerHTML+=`<option value="${c.id}">${c.empresa}</option>`;
-  });
- });
+ listaClientes.innerHTML=data.length?`
+ <div class="table-wrap"><table>
+ <tr><th>Empresa</th><th>CNPJ</th><th>Responsável</th><th>E-mail</th><th>Telefone</th><th>Ações</th></tr>
+ ${data.map(c=>`<tr>
+ <td>${c.empresa||""}</td><td>${c.cnpj||""}</td><td>${c.responsavel||""}</td><td>${c.email||""}</td><td>${c.telefone||""}</td>
+ <td><button onclick='editarCliente(${JSON.stringify(c)})'>Editar</button><button class="btn-red" onclick='excluirRegistro("clientes","${c.id}")'>Excluir</button></td>
+ </tr>`).join("")}
+ </table></div>`:"Nenhum cliente cadastrado.";
+}
 
- listaClientes.innerHTML = data.length ? `
- <div class="table-wrap">
- <table>
- <tr>
- <th>Empresa</th>
- <th>CNPJ</th>
- <th>Responsável</th>
- <th>E-mail</th>
- <th>Telefone</th>
- <th>Ações</th>
- </tr>
- ${data.map(c=>`
- <tr>
- <td>${c.empresa||""}</td>
- <td>${c.cnpj||""}</td>
- <td>${c.responsavel||""}</td>
- <td>${c.email||""}</td>
- <td>${c.telefone||""}</td>
- <td>
- <button onclick='editarCliente(${JSON.stringify(c)})'>Editar</button>
- <button class="btn-red" onclick='excluirRegistro("clientes","${c.id}")'>Excluir</button>
- </td>
- </tr>
- `).join("")}
- </table>
- </div>
- ` : "Nenhum cliente cadastrado.";
+async function carregarFuncionarios(){
+ const {data,error}=await db.from("funcionarios").select("*").order("created_at",{ascending:false});
+ if(error){tabelaFuncionarios.innerHTML="Erro: "+error.message;return}
+ tabelaFuncionarios.innerHTML=data.length?`
+ <div class="table-wrap"><table>
+ <tr><th>Cliente</th><th>Nome</th><th>CPF</th><th>Função</th><th>ASO</th><th>Periódico</th><th>NR10</th><th>NR35</th><th>Ações</th></tr>
+ ${data.map(f=>`<tr>
+ <td>${nomeCliente(f.cliente_id)}</td><td>${f.nome||""}</td><td>${f.cpf||""}</td><td>${f.funcao||""}</td>
+ <td>${dataBR(f.aso)}<br>${statusVenc(f.aso)}</td>
+ <td>${dataBR(f.exame_periodico)}<br>${statusVenc(f.exame_periodico)}</td>
+ <td>${dataBR(f.nr10)}<br>${statusVenc(f.nr10)}</td>
+ <td>${dataBR(f.nr35)}<br>${statusVenc(f.nr35)}</td>
+ <td><button class="btn-red" onclick='excluirRegistro("funcionarios","${f.id}")'>Excluir</button></td>
+ </tr>`).join("")}
+ </table></div>`:"Nenhum funcionário cadastrado.";
 }
 
 async function carregarFichasEPI(){
  const {data,error}=await db.from("fichas_epi").select("*").order("created_at",{ascending:false});
- if(error){
-  tabelaFichas.innerHTML = "Erro ao carregar fichas EPI: " + error.message;
-  return;
- }
-
- tabelaFichas.innerHTML = data && data.length ? `
- <div class="table-wrap">
- <table>
- <tr>
- <th>Cliente</th>
- <th>Colaborador</th>
- <th>CPF</th>
- <th>Função</th>
- <th>EPI</th>
- <th>CA</th>
- <th>Qtd</th>
- <th>Descrição</th>
- <th>Data</th>
- <th>Assinatura Colaborador</th>
- <th>Assinatura Responsável</th>
- <th>Ações</th>
- </tr>
- ${data.map(f=>`
- <tr>
- <td>${nomeCliente(f.cliente_id)}</td>
- <td>${f.colaborador||""}</td>
- <td>${f.cpf||""}</td>
- <td>${f.funcao||""}</td>
- <td>${f.epi||f.nome_epi||""}</td>
- <td>${f.ca||""}</td>
- <td>${f.quantidade||""}</td>
- <td>${f.descricao_epi||f.descricao||""}</td>
- <td>${dataBR(f.created_at||f.criado_em||f.data_entrega)}</td>
- <td>${assinaturaHTML(f.assinatura_colaborador||f.assinatura)}</td>
- <td>${assinaturaHTML(f.assinatura_responsavel)}</td>
- <td><button class="btn-red" onclick='excluirRegistro("fichas_epi","${f.id}")'>Excluir</button></td>
- </tr>
- `).join("")}
- </table>
- </div>
- ` : "Nenhuma ficha EPI encontrada.";
+ if(error){tabelaFichas.innerHTML="Erro: "+error.message;return}
+ tabelaFichas.innerHTML=data.length?`
+ <div class="table-wrap"><table>
+ <tr><th>Cliente</th><th>Colaborador</th><th>CPF</th><th>Função</th><th>EPI</th><th>CA</th><th>Qtd</th><th>Assinaturas</th><th>Ações</th></tr>
+ ${data.map(f=>`<tr>
+ <td>${nomeCliente(f.cliente_id)}</td><td>${f.colaborador||""}</td><td>${f.cpf||""}</td><td>${f.funcao||""}</td><td>${f.epi||""}</td><td>${f.ca||""}</td><td>${f.quantidade||""}</td>
+ <td>${assinaturaHTML(f.assinatura_colaborador||f.assinatura)}<br>${assinaturaHTML(f.assinatura_responsavel)}</td>
+ <td>
+ <button onclick='visualizarEPI(${JSON.stringify(f)})'>Visualizar</button>
+ <button class="btn-orange" onclick='visualizarEPI(${JSON.stringify(f)},true)'>Imprimir</button>
+ <button class="btn-red" onclick='excluirRegistro("fichas_epi","${f.id}")'>Excluir</button>
+ </td>
+ </tr>`).join("")}
+ </table></div>`:"Nenhuma ficha EPI encontrada.";
 }
 
 async function carregarDDS(){
  const {data,error}=await db.from("dds").select("*").order("created_at",{ascending:false});
- if(error){
-  tabelaDDS.innerHTML = "Erro ao carregar DDS: " + error.message;
-  return;
- }
-
- tabelaDDS.innerHTML = data && data.length ? `
- <div class="table-wrap">
- <table>
- <tr>
- <th>Cliente</th>
- <th>Tema</th>
- <th>Responsável</th>
- <th>Participantes</th>
- <th>Conteúdo</th>
- <th>Data</th>
- <th>Assinatura</th>
- <th>Ações</th>
- </tr>
- ${data.map(d=>`
- <tr>
- <td>${nomeCliente(d.cliente_id)}</td>
- <td>${d.tema||""}</td>
- <td>${d.responsavel||""}</td>
- <td>${d.participantes||""}</td>
- <td>${d.conteudo||d.medidas||""}</td>
- <td>${dataBR(d.created_at||d.criado_em)}</td>
- <td>${assinaturaHTML(d.assinatura_responsavel||d.assinatura)}</td>
- <td><button class="btn-red" onclick='excluirRegistro("dds","${d.id}")'>Excluir</button></td>
- </tr>
- `).join("")}
- </table>
- </div>
- ` : "Nenhum DDS encontrado.";
+ if(error){tabelaDDS.innerHTML="Erro: "+error.message;return}
+ tabelaDDS.innerHTML=data.length?`
+ <div class="table-wrap"><table>
+ <tr><th>Cliente</th><th>Tema</th><th>Responsável</th><th>Participantes</th><th>Data</th><th>Ações</th></tr>
+ ${data.map(d=>`<tr>
+ <td>${nomeCliente(d.cliente_id)}</td><td>${d.tema||""}</td><td>${d.responsavel||""}</td><td>${d.participantes||""}</td><td>${dataBR(d.created_at)}</td>
+ <td><button onclick='visualizarDDS(${JSON.stringify(d)})'>Visualizar</button><button class="btn-orange" onclick='visualizarDDS(${JSON.stringify(d)},true)'>Imprimir</button><button class="btn-red" onclick='excluirRegistro("dds","${d.id}")'>Excluir</button></td>
+ </tr>`).join("")}
+ </table></div>`:"Nenhum DDS encontrado.";
 }
 
 async function carregarAPR(){
  const {data,error}=await db.from("aprs").select("*").order("created_at",{ascending:false});
- if(error){
-  tabelaAPR.innerHTML = "Erro ao carregar APR: " + error.message;
-  return;
- }
-
- tabelaAPR.innerHTML = data && data.length ? `
- <div class="table-wrap">
- <table>
- <tr>
- <th>Cliente</th>
- <th>Atividade</th>
- <th>Local</th>
- <th>Risco</th>
- <th>Controle</th>
- <th>Responsável</th>
- <th>Data</th>
- <th>Ações</th>
- </tr>
- ${data.map(a=>`
- <tr>
- <td>${nomeCliente(a.cliente_id)}</td>
- <td>${a.atividade||""}</td>
- <td>${a.local||""}</td>
- <td>${a.risco||""}</td>
- <td>${a.controle||""}</td>
- <td>${a.responsavel||""}</td>
- <td>${dataBR(a.created_at||a.criado_em)}</td>
- <td><button class="btn-red" onclick='excluirRegistro("aprs","${a.id}")'>Excluir</button></td>
- </tr>
- `).join("")}
- </table>
- </div>
- ` : "Nenhuma APR encontrada.";
+ if(error){tabelaAPR.innerHTML="Erro: "+error.message;return}
+ tabelaAPR.innerHTML=data.length?`
+ <div class="table-wrap"><table>
+ <tr><th>Cliente</th><th>Atividade</th><th>Local</th><th>Risco</th><th>Responsável</th><th>Data</th><th>Ações</th></tr>
+ ${data.map(a=>`<tr>
+ <td>${nomeCliente(a.cliente_id)}</td><td>${a.atividade||""}</td><td>${a.local||""}</td><td>${a.risco||""}</td><td>${a.responsavel||""}</td><td>${dataBR(a.created_at)}</td>
+ <td><button onclick='visualizarAPR(${JSON.stringify(a)})'>Visualizar</button><button class="btn-orange" onclick='visualizarAPR(${JSON.stringify(a)},true)'>Imprimir</button><button class="btn-red" onclick='excluirRegistro("aprs","${a.id}")'>Excluir</button></td>
+ </tr>`).join("")}
+ </table></div>`:"Nenhuma APR encontrada.";
 }
 
 async function carregarVencimentos(){
- const {data,error}=await db.from("vencimentos").select("*").order("created_at",{ascending:false});
- if(error){
-  tabelaVencimentos.innerHTML = "Erro ao carregar vencimentos: " + error.message;
-  return;
- }
-
- tabelaVencimentos.innerHTML = data && data.length ? `
- <div class="table-wrap">
- <table>
- <tr>
- <th>Cliente</th>
- <th>Tipo</th>
- <th>Descrição</th>
- <th>Vencimento</th>
- <th>Data Cadastro</th>
- <th>Ações</th>
- </tr>
- ${data.map(v=>`
- <tr>
- <td>${nomeCliente(v.cliente_id)}</td>
- <td>${v.tipo||""}</td>
- <td>${v.descricao||""}</td>
- <td>${v.vencimento||""}</td>
- <td>${dataBR(v.created_at||v.criado_em)}</td>
+ const {data,error}=await db.from("vencimentos").select("*").order("vencimento",{ascending:true});
+ if(error){tabelaVencimentos.innerHTML="Erro: "+error.message;return}
+ tabelaVencimentos.innerHTML=data.length?`
+ <div class="table-wrap"><table>
+ <tr><th>Cliente</th><th>Tipo</th><th>Descrição</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr>
+ ${data.map(v=>`<tr>
+ <td>${nomeCliente(v.cliente_id)}</td><td>${v.tipo||""}</td><td>${v.descricao||""}</td><td>${dataBR(v.vencimento)}</td><td>${statusVenc(v.vencimento)}</td>
  <td><button class="btn-red" onclick='excluirRegistro("vencimentos","${v.id}")'>Excluir</button></td>
- </tr>
- `).join("")}
- </table>
- </div>
- ` : "Nenhum vencimento encontrado.";
+ </tr>`).join("")}
+ </table></div>`:"Nenhum vencimento encontrado.";
 }
 
 async function carregarTudo(){
  await carregarClientes();
-
  await Promise.all([
-  contar("clientes","countClientes"),
-  contar("dds","countDDS"),
-  contar("fichas_epi","countEPI"),
-  contar("aprs","countAPR"),
-  contar("vencimentos","countVenc"),
-  carregarFichasEPI(),
-  carregarDDS(),
-  carregarAPR(),
-  carregarVencimentos()
+ contar("clientes","countClientes"),contar("funcionarios","countFunc"),contar("dds","countDDS"),contar("fichas_epi","countEPI"),contar("aprs","countAPR"),contar("vencimentos","countVenc"),
+ carregarFuncionarios(),carregarFichasEPI(),carregarDDS(),carregarAPR(),carregarVencimentos()
  ]);
 }
 
 async function salvarCliente(){
- const dados = {
-  empresa: clienteEmpresa.value,
-  cnpj: clienteCNPJ.value,
-  responsavel: clienteResp.value,
-  email: clienteEmail.value,
-  telefone: clienteTel.value
- };
-
+ const dados={empresa:clienteEmpresa.value,cnpj:clienteCNPJ.value,responsavel:clienteResp.value,email:clienteEmail.value,telefone:clienteTel.value};
  let error;
-
- if(clienteEditando){
-  ({ error } = await db.from("clientes").update(dados).eq("id", clienteEditando));
- }else{
-  ({ error } = await db.from("clientes").insert(dados));
- }
-
- if(error){
-  alert("Erro: " + error.message);
-  return;
- }
-
- alert(clienteEditando ? "Cliente atualizado!" : "Cliente salvo!");
- limparFormularioCliente();
- carregarTudo();
+ if(clienteEditando){({error}=await db.from("clientes").update(dados).eq("id",clienteEditando))}
+ else{({error}=await db.from("clientes").insert(dados))}
+ if(error)return alert("Erro: "+error.message);
+ alert(clienteEditando?"Cliente atualizado!":"Cliente salvo!");
+ limparFormularioCliente();carregarTudo();
 }
 
 function editarCliente(c){
- clienteEditando = c.id;
- tituloCliente.innerText = "Editando Cliente";
- clienteEmpresa.value = c.empresa || "";
- clienteCNPJ.value = c.cnpj || "";
- clienteResp.value = c.responsavel || "";
- clienteEmail.value = c.email || "";
- clienteTel.value = c.telefone || "";
+ clienteEditando=c.id;tituloCliente.innerText="Editando Cliente";
+ clienteEmpresa.value=c.empresa||"";clienteCNPJ.value=c.cnpj||"";clienteResp.value=c.responsavel||"";clienteEmail.value=c.email||"";clienteTel.value=c.telefone||"";
  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function cancelarEdicaoCliente(){
- limparFormularioCliente();
-}
+function cancelarEdicaoCliente(){limparFormularioCliente()}
+function limparFormularioCliente(){clienteEmpresa.value="";clienteCNPJ.value="";clienteResp.value="";clienteEmail.value="";clienteTel.value="";clienteEditando=null;tituloCliente.innerText="Cadastrar Cliente"}
 
-function limparFormularioCliente(){
- clienteEmpresa.value="";
- clienteCNPJ.value="";
- clienteResp.value="";
- clienteEmail.value="";
- clienteTel.value="";
- clienteEditando=null;
- tituloCliente.innerText = "Cadastrar Cliente";
-}
-
-async function excluirRegistro(tabela,id){
- if(!confirm("Tem certeza que deseja excluir este registro?")) return;
-
- const {error}=await db.from(tabela).delete().eq("id",id);
-
- if(error){
-  alert("Erro: " + error.message);
-  return;
- }
-
- alert("Registro excluído!");
- carregarTudo();
+async function salvarFuncionario(){
+ const {error}=await db.from("funcionarios").insert({
+ cliente_id:funcCliente.value||null,nome:funcNome.value,cpf:funcCPF.value,funcao:funcFuncao.value,admissao:funcAdmissao.value||null,aso:funcASO.value||null,exame_periodico:funcPeriodico.value||null,nr10:funcNR10.value||null,nr35:funcNR35.value||null
+ });
+ if(error)return alert("Erro: "+error.message);
+ alert("Funcionário salvo!");carregarTudo();
 }
 
 async function salvarDDS(){
- const {error}=await db.from("dds").insert({
-  cliente_id:ddsCliente.value||null,
-  tema:ddsTema.value,
-  responsavel:ddsResp.value,
-  participantes:parseInt(ddsPart.value||0),
-  conteudo:ddsConteudo.value
- });
-
- if(error) return alert("Erro: "+error.message);
-
- alert("DDS salvo!");
- ddsTema.value="";
- ddsResp.value="";
- ddsPart.value="";
- ddsConteudo.value="";
- carregarTudo();
+ const {error}=await db.from("dds").insert({cliente_id:ddsCliente.value||null,tema:ddsTema.value,responsavel:ddsResp.value,participantes:parseInt(ddsPart.value||0),conteudo:ddsConteudo.value});
+ if(error)return alert("Erro: "+error.message);
+ alert("DDS salvo!");carregarTudo();
 }
 
 async function salvarEPI(){
- const {error}=await db.from("fichas_epi").insert({
-  cliente_id:epiCliente.value||null,
-  colaborador:epiColab.value,
-  cpf:epiCPF.value,
-  funcao:epiFuncao.value,
-  epi:epiNome.value,
-  ca:epiCA.value,
-  quantidade:parseInt(epiQtd.value||0),
-  descricao_epi:epiDescricao.value
- });
-
- if(error) return alert("Erro: "+error.message);
-
- alert("Ficha EPI salva!");
- epiColab.value="";
- epiCPF.value="";
- epiFuncao.value="";
- epiNome.value="";
- epiCA.value="";
- epiQtd.value="";
- epiDescricao.value="";
- carregarTudo();
+ const {error}=await db.from("fichas_epi").insert({cliente_id:epiCliente.value||null,colaborador:epiColab.value,cpf:epiCPF.value,funcao:epiFuncao.value,epi:epiNome.value,ca:epiCA.value,quantidade:parseInt(epiQtd.value||0),descricao_epi:epiDescricao.value});
+ if(error)return alert("Erro: "+error.message);
+ alert("Ficha EPI salva!");carregarTudo();
 }
 
 async function salvarAPR(){
- const {error}=await db.from("aprs").insert({
-  cliente_id:aprCliente.value||null,
-  atividade:aprAtividade.value,
-  local:aprLocal.value,
-  risco:aprRisco.value,
-  controle:aprControle.value,
-  responsavel:aprResp.value
- });
-
- if(error) return alert("Erro: "+error.message);
-
- alert("APR salva!");
- aprAtividade.value="";
- aprLocal.value="";
- aprRisco.value="";
- aprControle.value="";
- aprResp.value="";
- carregarTudo();
+ const {error}=await db.from("aprs").insert({cliente_id:aprCliente.value||null,atividade:aprAtividade.value,local:aprLocal.value,risco:aprRisco.value,controle:aprControle.value,responsavel:aprResp.value});
+ if(error)return alert("Erro: "+error.message);
+ alert("APR salva!");carregarTudo();
 }
 
 async function salvarVencimento(){
- const {error}=await db.from("vencimentos").insert({
-  cliente_id:vencCliente.value||null,
-  tipo:vencTipo.value,
-  descricao:vencDesc.value,
-  vencimento:vencData.value
- });
-
- if(error) return alert("Erro: "+error.message);
-
- alert("Vencimento salvo!");
- vencTipo.value="";
- vencDesc.value="";
- vencData.value="";
- carregarTudo();
+ const {error}=await db.from("vencimentos").insert({cliente_id:vencCliente.value||null,tipo:vencTipo.value,descricao:vencDesc.value,vencimento:vencData.value});
+ if(error)return alert("Erro: "+error.message);
+ alert("Vencimento salvo!");carregarTudo();
 }
 
-if(localStorage.getItem("adminGloballed")==="logado"){
- mostrarPainel();
+async function excluirRegistro(tabela,id){
+ if(!confirm("Tem certeza que deseja excluir este registro?"))return;
+ const {error}=await db.from(tabela).delete().eq("id",id);
+ if(error)return alert("Erro: "+error.message);
+ alert("Registro excluído!");carregarTudo();
 }
+
+function abrirModal(html,imprimir=false){
+ modal.style.display="block";
+ modalConteudo.innerHTML=`<button class="fechar" onclick="modal.style.display='none'">Fechar</button><button class="print-btn" onclick="window.print()">Imprimir</button>${html}`;
+ if(imprimir)setTimeout(()=>window.print(),500);
+}
+
+function visualizarEPI(f,imprimir=false){
+ abrirModal(`<h1>Ficha de EPI</h1><p><b>Cliente:</b> ${nomeCliente(f.cliente_id)}</p><p><b>Colaborador:</b> ${f.colaborador||""}</p><p><b>CPF:</b> ${f.cpf||""}</p><p><b>Função:</b> ${f.funcao||""}</p><p><b>EPI:</b> ${f.epi||""}</p><p><b>CA:</b> ${f.ca||""}</p><p><b>Quantidade:</b> ${f.quantidade||""}</p><p><b>Descrição:</b> ${f.descricao_epi||""}</p><h2>Assinatura Colaborador</h2>${assinaturaHTML(f.assinatura_colaborador||f.assinatura)}<h2>Assinatura Responsável</h2>${assinaturaHTML(f.assinatura_responsavel)}`,imprimir);
+}
+
+function visualizarDDS(d,imprimir=false){
+ abrirModal(`<h1>DDS</h1><p><b>Cliente:</b> ${nomeCliente(d.cliente_id)}</p><p><b>Tema:</b> ${d.tema||""}</p><p><b>Responsável:</b> ${d.responsavel||""}</p><p><b>Participantes:</b> ${d.participantes||""}</p><h2>Conteúdo</h2><p>${d.conteudo||d.medidas||""}</p>${assinaturaHTML(d.assinatura_responsavel||d.assinatura)}`,imprimir);
+}
+
+function visualizarAPR(a,imprimir=false){
+ abrirModal(`<h1>APR</h1><p><b>Cliente:</b> ${nomeCliente(a.cliente_id)}</p><p><b>Atividade:</b> ${a.atividade||""}</p><p><b>Local:</b> ${a.local||""}</p><p><b>Risco:</b> ${a.risco||""}</p><p><b>Controle:</b> ${a.controle||""}</p><p><b>Responsável:</b> ${a.responsavel||""}</p>${assinaturaHTML(a.assinatura_responsavel)}`,imprimir);
+}
+
+if(localStorage.getItem("adminGloballed")==="logado"){mostrarPainel()}
 </script>
 
 </body>
