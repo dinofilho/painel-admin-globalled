@@ -413,11 +413,39 @@ function cancelarEdicaoCliente(){limparFormularioCliente()}
 function limparFormularioCliente(){clienteEmpresa.value="";clienteCNPJ.value="";clienteResp.value="";clienteEmail.value="";clienteTel.value="";clienteEditando=null;tituloCliente.innerText="Cadastrar Cliente"}
 
 async function salvarFuncionario(){
- const {error}=await db.from("funcionarios").insert({
- cliente_id:funcCliente.value||null,nome:funcNome.value,cpf:funcCPF.value,funcao:funcFuncao.value,admissao:funcAdmissao.value||null,aso:funcASO.value||null,exame_periodico:funcPeriodico.value||null,nr10:funcNR10.value||null,nr35:funcNR35.value||null
- });
- if(error)return alert("Erro: "+error.message);
- alert("Funcionário salvo!");carregarTudo();
+
+ const dados = {
+  cliente_id: funcCliente.value || null,
+  nome: funcNome.value,
+  cpf: funcCPF.value,
+  funcao: funcFuncao.value,
+  admissao: funcAdmissao.value || null,
+  aso: funcASO.value || null,
+  exame_periodico: funcPeriodico.value || null,
+  nr10: funcNR10.value || null,
+  nr35: funcNR35.value || null
+ };
+
+ const {error} = await db
+ .from("funcionarios")
+ .insert(dados);
+
+ if(error){
+  return alert("Erro: " + error.message);
+ }
+
+ alert("Funcionário salvo!");
+
+ funcNome.value="";
+ funcCPF.value="";
+ funcFuncao.value="";
+ funcAdmissao.value="";
+ funcASO.value="";
+ funcPeriodico.value="";
+ funcNR10.value="";
+ funcNR35.value="";
+
+ carregarTudo();
 }
 
 async function salvarDDS(){
