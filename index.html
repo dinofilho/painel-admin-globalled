@@ -30,7 +30,7 @@ button,.btn{padding:12px;border:none;border-radius:12px;background:#009b68;color
 .stat{text-align:center}
 .stat strong{font-size:34px;color:#00ffae;display:block}
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;margin-top:10px;background:#082426;min-width:850px}
+table{width:100%;border-collapse:collapse;margin-top:10px;background:#082426;min-width:1150px}
 td,th{border:1px solid #16887d;padding:8px;font-size:13px;vertical-align:top}
 td button{margin:3px;padding:8px;font-size:12px}
 .menu-btn{background:#082426;border:1px solid #16887d}
@@ -137,7 +137,11 @@ td,th{padding:6px}
 <label>Admissão</label><input id="funcAdmissao" type="date">
 <label>ASO</label><input id="funcASO" type="date">
 <label>Periódico</label><input id="funcPeriodico" type="date">
+<label>NR06</label><input id="funcNR06" type="date">
 <label>NR10</label><input id="funcNR10" type="date">
+<label>NR12</label><input id="funcNR12" type="date">
+<label>NR20</label><input id="funcNR20" type="date">
+<label>NR33</label><input id="funcNR33" type="date">
 <label>NR35</label><input id="funcNR35" type="date">
 <button onclick="salvarFuncionario()">Salvar Funcionário</button>
 </div>
@@ -316,12 +320,33 @@ async function carregarFuncionarios(){
  if(error){tabelaFuncionarios.innerHTML="Erro: "+error.message;return}
  tabelaFuncionarios.innerHTML=data.length?`
  <div class="table-wrap"><table>
- <tr><th>Cliente</th><th>Nome</th><th>CPF</th><th>Função</th><th>ASO</th><th>Periódico</th><th>NR10</th><th>NR35</th><th>Ações</th></tr>
+ <tr>
+ <th>Cliente</th>
+ <th>Nome</th>
+ <th>CPF</th>
+ <th>Função</th>
+ <th>ASO</th>
+ <th>Periódico</th>
+ <th>NR06</th>
+ <th>NR10</th>
+ <th>NR12</th>
+ <th>NR20</th>
+ <th>NR33</th>
+ <th>NR35</th>
+ <th>Ações</th>
+ </tr>
  ${data.map(f=>`<tr>
- <td>${nomeCliente(f.cliente_id)}</td><td>${f.nome||""}</td><td>${f.cpf||""}</td><td>${f.funcao||""}</td>
+ <td>${nomeCliente(f.cliente_id)}</td>
+ <td>${f.nome||""}</td>
+ <td>${f.cpf||""}</td>
+ <td>${f.funcao||""}</td>
  <td>${dataBR(f.aso)}<br>${statusVenc(f.aso)}</td>
  <td>${dataBR(f.exame_periodico)}<br>${statusVenc(f.exame_periodico)}</td>
+ <td>${dataBR(f.nr06)}<br>${statusVenc(f.nr06)}</td>
  <td>${dataBR(f.nr10)}<br>${statusVenc(f.nr10)}</td>
+ <td>${dataBR(f.nr12)}<br>${statusVenc(f.nr12)}</td>
+ <td>${dataBR(f.nr20)}<br>${statusVenc(f.nr20)}</td>
+ <td>${dataBR(f.nr33)}<br>${statusVenc(f.nr33)}</td>
  <td>${dataBR(f.nr35)}<br>${statusVenc(f.nr35)}</td>
  <td><button class="btn-red" onclick='excluirRegistro("funcionarios","${f.id}")'>Excluir</button></td>
  </tr>`).join("")}
@@ -422,7 +447,11 @@ async function salvarFuncionario(){
   admissao: funcAdmissao.value || null,
   aso: funcASO.value || null,
   exame_periodico: funcPeriodico.value || null,
+  nr06: funcNR06.value || null,
   nr10: funcNR10.value || null,
+  nr12: funcNR12.value || null,
+  nr20: funcNR20.value || null,
+  nr33: funcNR33.value || null,
   nr35: funcNR35.value || null
  };
 
@@ -442,7 +471,11 @@ async function salvarFuncionario(){
  funcAdmissao.value="";
  funcASO.value="";
  funcPeriodico.value="";
+ funcNR06.value="";
  funcNR10.value="";
+ funcNR12.value="";
+ funcNR20.value="";
+ funcNR33.value="";
  funcNR35.value="";
 
  carregarTudo();
