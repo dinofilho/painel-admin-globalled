@@ -278,12 +278,41 @@ function diasPara(data){
  return Math.ceil((d-hoje)/(1000*60*60*24));
 }
 
-function statusVenc(data){
- const dias = diasPara(data);
- if(dias===null) return "";
- if(dias < 0) return `<span class="alerta vencido">Vencido há ${Math.abs(dias)} dias</span>`;
- if(dias <= 30) return `<span class="alerta vencendo">Vence em ${dias} dias</span>`;
- return `<span class="alerta ok">Em dia</span>`;
+function statusVenc(dataTreinamento){
+
+ if(!dataTreinamento) return "";
+
+ const partes = dataTreinamento.split("-");
+
+ const ano = parseInt(partes[0]);
+ const mes = parseInt(partes[1]) - 1;
+ const dia = parseInt(partes[2]);
+
+ const vencimento = new Date(
+   ano + 1,
+   mes,
+   dia
+ );
+
+ const hoje = new Date();
+
+ hoje.setHours(0,0,0,0);
+ vencimento.setHours(0,0,0,0);
+
+ const dias = Math.ceil(
+   (vencimento - hoje) /
+   (1000*60*60*24)
+ );
+
+ if(dias < 0){
+   return `<span class="alerta vencido">Vencido há ${Math.abs(dias)} dias</span>`;
+ }
+
+ if(dias <= 30){
+   return `<span class="alerta vencendo">Vence em ${dias} dias</span>`;
+ }
+
+ return `<span class="alerta ok">Válido até ${vencimento.toLocaleDateString("pt-BR")}</span>`;
 }
 
 function assinaturaHTML(valor){
